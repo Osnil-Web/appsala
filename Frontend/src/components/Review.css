@@ -1,0 +1,47 @@
+/* Addcompany.css */
+.app-form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .app-form-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    /* Adjust the line-height to change the height of text inputs */
+    line-height: 1.5; /* You can experiment with different values here */
+  }
+  
+  .app-form-container button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .app-form-container button:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .app-form-container p {
+    margin-top: 10px;
+    font-size: 18px;
+    /* Adjust the line-height to change the height of paragraphs */
+    line-height: 1.6; /* You can experiment with different values here */
+  }
+  
+  .app-form-container strong {
+    font-weight: bold;
+  }
+  
+  .app-form-container em {
+    font-style: italic;
+  }
+  
