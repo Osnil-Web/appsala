@@ -39,37 +39,7 @@ function Product() {
     const [followingAppComments, setFollowingAppComments] = useState([])
     const [followingAppCommentList, setFollowingAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
-    function StarRatings({ average }) {
-      const renderStars = () => {
-        const stars = [];
-    
-        if(average === 0){
-          for (let i = 0; i < 5; i++) {
-            stars.push(<FaStar key="empty" style={{ color:"#D9D9D9" }} />);
-          }
-        }else{
-        const fullStars = Math.floor(average);
-        const remainingStar = average - fullStars;
-        const remainingStarColor = " #D9D9D9";
-    
-    
-        for (let i = 0; i < fullStars; i++) {
-          stars.push(<FaStar key={`full_${i}`} style={{ color: '#F11A7B' }} />);
-        }
-    
-        if (remainingStar >= 0.5) {
-          stars.push(<FaStar key="half" style={{ color: '#F11A7B' }} />);
-          stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-        } else if (remainingStar > 0) {
-          stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-        }
-      }
-        return stars;
-      };
-    
-      return <div>{renderStars()}</div>;
-    }
-
+   
     const handlePopup = () => {
       if(!auth.isAuthenticated){
           setShowOverlay(true)
@@ -201,7 +171,7 @@ function Product() {
           <img src={singleProduct[0]?.logo} alt=""/>
           <div>
           <h3>{singleProduct[0]?.name}</h3>
-          <StarRatings average={singleProduct[0]?.averageRating}/> 
+          <StarRating rating={singleProduct[0]?.averageRating}/> 
            <p>749  Follows</p>
           </div>
           </div>
@@ -212,7 +182,7 @@ function Product() {
             <div className='my-rating'  onClick={handleRatingPopup}>
                 <p>My Rating </p>
                 {
-                isFollowing ? <StarRatings average={average}/> : <StarRating/>
+                isFollowing ? <StarRating rating={average}/> : <StarRating/>
                 }
             </div>
    

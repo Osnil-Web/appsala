@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../Reducers/AuthReducer';
 import { useEffect } from 'react';
 
-function LoginPopup() {
+function LoginPopup({setLoginPopupOpen}) {
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',});
@@ -44,7 +44,8 @@ const handleSubmit = (e) => {
 
     useEffect(() => {
       if (userId) {
-        navigate(`/profile/${userId}`);
+        navigate(`/`);
+        setLoginPopupOpen(false)
       }
       if (error) {
         alert('Wrong Email or Password');

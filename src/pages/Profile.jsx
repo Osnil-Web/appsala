@@ -8,7 +8,7 @@ import logo from '../assets/img/logo.png'
 import sort from '../assets/img/sort.svg'
 import searchIcon from '../assets/img/search.svg'
 import ProfileProductsList from '../components/ProfileProductsList'
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import Settings from '../components/Settings'
 import ProfilePage from '../components/ProfilePage'
@@ -20,11 +20,10 @@ import { useNavigate } from 'react-router-dom';
 function Profile() {
    const currentUser = useSelector((state) => state.user);
    const loading = useSelector((state) => state.user.loading);
-  // console.log(currentUser)
+
   const followingApps = currentUser?.products?.data?.following_app
   const [userApps, setUserApps] = useState(followingApps)
-  // console.log(followingApps)
-  console.log(userApps)
+
   const id = localStorage.getItem('userId')
   const dispatch = useDispatch();
   const navigate = useNavigate()
@@ -87,7 +86,6 @@ function Profile() {
         return dateA - dateB;
     })
     setUserApps(sortedItems);
-    console.log(userApps)
     } else if (type === 'oldest') {
       setSortText('Oldest');
       var sortedItems = [...userApps].sort((a, b) => {  
@@ -96,7 +94,6 @@ function Profile() {
         return dateB - dateA;
     })
     setUserApps(sortedItems);
-    console.log(userApps)
    
   }
   if (type === 'highest') {
@@ -205,7 +202,7 @@ const onHandleChange =(e)=>{
   return (
     <div className="profile">
       <div className="sidebar">
-        <Link to='/'> 
+        <Link to={"/"}>
         <img src={logo} style={{ height:'50px'}}
         alt="" />
         </Link>
