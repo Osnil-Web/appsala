@@ -5,11 +5,11 @@ import { LiaCommentSolid } from 'react-icons/lia'
 import { FaArrowCircleRight } from 'react-icons/fa'
 import { useState,useEffect } from 'react'
 import RatingPopup from './RatingPopup'
+import StarRating from './StarRating'
 import StatusPopup from './StatusPopup'
 import CommentPopup from './CommentPopup'
-function ProfileProductItem({info, id}) {
+function ProfileProductItem({info, id, savedApp}) {
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('');
-  console.log(info)
 const selector = (val)=>{
   if (val.startsWith('I am')){
   return 'option1'
@@ -63,11 +63,10 @@ if (info?.subscription?.comment){
   var comments = 0
 }
 
-if(info?.obj_id?.rating){
-  var rating = info.obj_id.rating
+if(info?.subscription?.user_ratings[0]?.rating){
+  var rating = info?.subscription?.user_ratings[0]?.rating
   var ratingValues = Object.values(rating);
   var totalValues = ratingValues.length;
-  
   var sum = ratingValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   var average = sum / totalValues;
 }else{
@@ -147,14 +146,11 @@ const handleDropdownChange = async(e) => {
         if (e.target.value === 'option4'){
           var currentStatus = "No, i don't 😑"}
           
-  // console.log(typeof(currentStatus))
 
-  const apiUrl =`https://appsalabackend-p20y.onrender.com/update-status/${info.obj_id._id}`
-  console.log(info.obj_id._id)
-  // const response = await fetch(apiUrl) // Replace with your API call
-  // const data = await response.json()
-  // return data;
-  // console.log('api calling')
+  const applicationID = info?.obj_id?._id ? info?.obj_id?._id : info?._id;
+  const apiUrl =`https://appsalabackend-p20y.onrender.com/update-status/${applicationID}`
+  console.log(applicationID)
+
   const authToken = localStorage.getItem("token");
   const requestOptions = {
     method: "PUT",
@@ -175,36 +171,32 @@ const handleDropdownChange = async(e) => {
   console.log('done calling')
 };
 
-function StarRating({ average }) {
-  const renderStars = () => {
-    const stars = [];
+// function StarRating({ average }) {
+//   const renderStars = () => {
+//     const stars = [];
 
-    if(average === 0){
-      for (let i = 0; i < 5; i++) {
-        stars.push(<FaStar key="empty" style={{ color:"#D9D9D9" }} />);
-      }
-    }else{
-    const fullStars = Math.floor(average);
-    const remainingStar = average - fullStars;
-    const remainingStarColor = " #D9D9D9";
+//     if(average === 0){
+//       for (let i = 0; i < 5; i++) {
+//         stars.push(<FaStar key="empty" style={{ color:"#D9D9D9" }} />);
+//       }
+//     }else{
+//     const fullStars = Math.floor(average);
+//     const remainingStar = average - fullStars;
+//     const remainingStarColor = " #D9D9D9";
 
+//     for (let i = 0; i < fullStars; i++) {
+//       stars.push(<FaStar key={`full_${i}`} style={{ color: '#F11A7B' }} />);
+//     }
+    
+//     if (remainingStar > 0) {
+//       stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
+//     }
+//   }
+//     return stars;
+//   };
 
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<FaStar key={`full_${i}`} style={{ color: 'yellow' }} />);
-    }
-
-    if (remainingStar >= 0.5) {
-      stars.push(<FaStar key="half" style={{ color: 'yellow' }} />);
-      stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-    } else if (remainingStar > 0) {
-      stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-    }
-  }
-    return stars;
-  };
-
-  return <div>{renderStars()}</div>;
-}
+//   return <div>{renderStars()}</div>;
+// }
 const handleCommentPopup = () => {
   setShowOverlay(true);
   setCommentsPopup(true)
@@ -229,10 +221,10 @@ const handleRatingPopup = () => {
         <div className='aligned'>
         <h3 style={{color: 'black'}}>{name}</h3>
         <div className="stars">
-        <FaStar style={{color: "yellow"}}/>
-          <FaStar style={{color: "yellow"}}/>
-          <FaStar style={{color: "yellow"}}/>
-          <FaStar style={{color: "yellow"}}/>
+        <FaStar style={{color: "#F11A7B"}}/>
+          <FaStar style={{color: "#F11A7B"}}/>
+          <FaStar style={{color: "#F11A7B"}}/>
+          <FaStar style={{color: "#F11A7B"}}/>
           <FaStar style={{color: " #D9D9D9"}}/>
         </div>
         <p>(149 Follows)</p>
@@ -246,13 +238,26 @@ const handleRatingPopup = () => {
             <FaArrowCircleRight/>
             <p>{category}</p>
             </div>
-            <p>My Rating</p>
+         
+           
+          {
+            !savedApp ? 
+            <>
+            <p style={{marginRight: '4px'}}>My Rating</p>
         <div className="stars"  onClick={handleRatingPopup}>
-        <StarRating average={average}/>
+        <StarRating rating={average}/>
         </div>
+            </>  : ''
+          }
        
-        <LiaCommentSolid onClick={handleCommentPopup}/>
-        <p>comment <span style={{color: '#00A82D'}}>({comments})</span></p>
+   
+       {
+        !savedApp ?   <>
+        <LiaCommentSolid onClick={handleCommentPopup} style={{marginRight: '4px'}}/>
+         <p>comment <span style={{color: '#00A82D'}}>({comments})</span></p>
+        </> : ''
+       }
+          
         </div>
         </div>
         <div style={{marginTop: '20px'}}>

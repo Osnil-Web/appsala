@@ -8,7 +8,7 @@ import logo from '../assets/img/logo.png'
 import sort from '../assets/img/sort.svg'
 import searchIcon from '../assets/img/search.svg'
 import ProfileProductsList from '../components/ProfileProductsList'
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import Settings from '../components/Settings'
 import ProfilePage from '../components/ProfilePage'
@@ -18,24 +18,38 @@ import { fetchUser } from '../Reducers/userReducer'
 import { useNavigate } from 'react-router-dom';
 
 function Profile() {
-  const currentUser = useSelector((state) => state.user);
-  const loading = useSelector((state) => state.user.loading);
-  const [userApps, setUserApps] = useState([])
+   const currentUser = useSelector((state) => state.user);
+   const loading = useSelector((state) => state.user.loading);
+
+  const followingApps = currentUser?.products?.data?.following_app
+  const [userApps, setUserApps] = useState(followingApps)
+
+  const id = localStorage.getItem('userId')
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+    useEffect(() => {
+    dispatch(fetchUser(id));
+  }, [dispatch,id]);
+  useEffect(() => {
+    if (currentUser?.products?.data?.following_app) {
+      // If currentUser has data, set userApps and stop loading
+      setUserApps(currentUser.products.data.following_app);
+    }
+  }, [currentUser]);
+
+  const [sortFilter, setSortFilter] = useState(false);
+
   const [activeComponent, setActiveComponent] = useState('dashboard');
   const [sortOrder, setSortOrder] = useState('asc');
   const [showOverlay, setShowOverlay] = useState(false);
   const [sortList, showSortList] = useState(false);
-  const [user, setUser] = useState([])
+  const [user, setUser] = useState(currentUser.products?.data)
   const [searchVal, setSearchVal] = useState('')
-  const [savedApps, setSavedApps] = useState([])
+  const [savedApp, setSavedApp] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('option1');
   const [sortText, setSortText] = useState('Sort by');
-  // const {id} = useParams()
-  const id = localStorage.getItem('userId')
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate()
+ 
   
   const handleLogout = () => {
     window.location.reload();
@@ -43,8 +57,6 @@ function Profile() {
     navigate('/');
  
   };
-
-
   const handleSortClick = () => {
     showSortList(!sortList);
     setShowOverlay(true);
@@ -65,10 +77,7 @@ function Profile() {
   };
 
   const handleSortToggle = (type) => {
-    // console.log(userApps
     setShowOverlay(false)
-    // const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-    // setSortOrder(newSortOrder);
     if (type === 'latest') {
       setSortText('Latest');
       var sortedItems = [...userApps].sort((a, b) => {
@@ -76,9 +85,7 @@ function Profile() {
         var dateB = new Date(b.subscription.date);
         return dateA - dateB;
     })
-    // console.log(sortedItems)
     setUserApps(sortedItems);
-    console.log(userApps)
     } else if (type === 'oldest') {
       setSortText('Oldest');
       var sortedItems = [...userApps].sort((a, b) => {  
@@ -86,9 +93,7 @@ function Profile() {
         var dateB = new Date(b.subscription.date);
         return dateB - dateA;
     })
-    // console.log(sortedItems)
     setUserApps(sortedItems);
-    console.log(userApps)
    
   }
   if (type === 'highest') {
@@ -108,24 +113,19 @@ function Profile() {
     });
     setUserApps(sortedItems);
   }
-
+  setSortFilter(true)
 }
-  // const dispatch = useDispatch();
- 
 
 
-  useEffect(() => {
-    dispatch(fetchUser(id));
-    // AllUsers()
-  }, [user,dispatch, userApps,id]);
-  
 const AllUsers = () =>{
+  setSavedApp(false)
   setUserApps(currentUser.products?.data?.following_app)
   setUser(currentUser.products?.data)
   setSelectedFilter('All')
 }
 
 const handleFilterClick = (filter) => {
+  setSavedApp(false)
   if (filter === 'All') {
     AllUsers();
   } 
@@ -152,11 +152,13 @@ const filterComments = () =>{
 }
 
 const filterSaved = () =>{
+  setSavedApp(true)
   setUserApps(user?.saved)
   setSelectedFilter('Saved')
  }
  
 const filterRatings = () =>{
+  setSavedApp(false)
   const filterRated = user?.following_app?.filter((i) => (i.obj_id.rating))
   setUserApps(filterRated)
   setSelectedFilter('Ratings')
@@ -200,7 +202,7 @@ const onHandleChange =(e)=>{
   return (
     <div className="profile">
       <div className="sidebar">
-        <Link to='/'> 
+        <Link to={"/"}>
         <img src={logo} style={{ height:'50px'}}
         alt="" />
         </Link>
@@ -286,14 +288,13 @@ const onHandleChange =(e)=>{
         }
     
 {
-   <ProfileProductsList userApps={userApps} id={id}/>
+   <ProfileProductsList userApps={userApps} id={id} savedApp={savedApp}/>
 }
        
       </div>
 }
 
   {activeComponent === 'profilepage' && <ProfilePage/>}  
-  {/* {activeComponent === 'settings' && <Settings user={user}/>} */}
       
     </div>
   );

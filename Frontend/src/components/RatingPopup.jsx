@@ -9,16 +9,31 @@ function RatingPopup({info,setRatingPopup}) {
   console.log(info)
   const apiUrl = `https://appsalabackend-p20y.onrender.com/rating/${applicationId}`; 
   // const [rating, setRating] = useState(0);
-  const currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app)=> app.obj_id._id === info.obj_id._id).subscription?.user_ratings[0].rating); 
-  console.log('currentRatings',currentRatings)
+  var currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app)=> app.obj_id._id === info.obj_id._id).subscription?.user_ratings); 
+  var currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app) => app.obj_id._id === info.obj_id._id).subscription?.user_ratings);
+
+  // Check if currentRatings is an empty array and assign a default value if it is
+  if (Array.isArray(currentRatings) && currentRatings.length > 0 && currentRatings[0]?.rating) {
+    currentRatings = currentRatings[0]?.rating;
+  } else {
+    currentRatings = []; // Replace 'defaultValue' with the value you want to assign when user_ratings is an empty array
+  }
+  
+  // Now you can use 'currentRatings' with confidence
+  
+  const userRatings = info?.subscription?.user_ratings[0]?.rating || {};
+  console.log(userRatings)
+
   const [selectedRatings, setSelectedRatings] = useState({
-    Usability: info?.subscription?.user_ratings[0]?.rating?.Usability,
-    Performance: info.subscription.user_ratings[0].rating.Performance,
-    Features: info.subscription.user_ratings[0].rating.Features,
-    Company: info.subscription.user_ratings[0].rating.Company,
-    Value: info.subscription.user_ratings[0].rating.Value,
-    Support: info.subscription.user_ratings[0].rating.Support,
+    Usability: userRatings.Usability || 0, // Set a default value (e.g., 0) if Usability rating is missing
+    Performance: userRatings.Performance || 0, // Set a default value if Performance rating is missing
+    Features: userRatings.Features || 0, // Set a default value if Features rating is missing
+    Company: userRatings.Company || 0, // Set a default value if Company rating is missing
+    Value: userRatings.Value || 0, // Set a default value if Value rating is missing
+    Support: userRatings.Support || 0, // Set a default value if Support rating is missing
   });
+
+
 const dispatch = useDispatch();
   useEffect(() => { 
     const userId = localStorage.getItem("userId");

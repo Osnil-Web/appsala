@@ -101,7 +101,7 @@ if (isProfileRoute) {
     <div>
           {showOverlay && loginPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <LoginPopup/>
+          <LoginPopup setLoginPopupOpen={setLoginPopupOpen}/>
         </div>
   )}
 

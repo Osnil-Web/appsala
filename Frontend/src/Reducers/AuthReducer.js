@@ -16,28 +16,50 @@ const initialState = {
 const signupUrl = 'https://appsalabackend-p20y.onrender.com/signup'
 const apiUrl = 'https://appsalabackend-p20y.onrender.com/login'
 
-export const signupUser = createAsyncThunk('signup', async (body) =>{
-  const res = await fetch(signupUrl, { 
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(body),
-});
-return res.json();
-// console.log(res.json())
+export const signupUser = createAsyncThunk('signup', async (body, { rejectWithValue }) => {
+  try {
+    const res = await fetch(signupUrl, { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      // Check if the response status is not in the 2xx range
+      const errorData = await res.json(); // Assuming your server returns error details as JSON
+      throw new Error(errorData.message); // You can customize this error handling based on your server's response format
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
 });
 
-export const loginUser = createAsyncThunk('login', async (body) =>{
-  const res = await fetch(apiUrl, { 
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(body),
-});
-return res.json();
-// console.log(res.json())
+export const loginUser = createAsyncThunk('login', async (body, { rejectWithValue }) => {
+  try {
+    const res = await fetch(apiUrl, { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      // Check if the response status is not in the 2xx range
+      const errorData = await res.json(); // Assuming your server returns error details as JSON
+      throw new Error(errorData.message); // You can customize this error handling based on your server's response format
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
 });
 
 export const logoutUser = () => {

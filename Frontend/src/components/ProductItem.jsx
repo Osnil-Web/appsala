@@ -29,42 +29,13 @@ function ProductItem({product}) {
     const [followingAppComments, setFollowingAppComments] = useState([])
     const [followingAppCommentList, setFollowingAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
+    
     // console.log(followingAppComments)
     var shortDescription = product.shortDescription
     const words = shortDescription.split(/\s+/);
     // Get the first 20 words
     const first20Words = words.slice(0, 20).join(" ");
     var shortDescription = first20Words + '...'
-    function StarRatings({ average }) {
-        const renderStars = () => {
-          const stars = [];
-      
-          if(average === 0){
-            for (let i = 0; i < 5; i++) {
-              stars.push(<FaStar key="empty" style={{ color:"#D9D9D9" }} />);
-            }
-          }else{
-          const fullStars = Math.floor(average);
-          const remainingStar = average - fullStars;
-          const remainingStarColor = " #D9D9D9";
-      
-      
-          for (let i = 0; i < fullStars; i++) {
-            stars.push(<FaStar key={`full_${i}`} style={{ color: 'yellow' }} />);
-          }
-      
-          if (remainingStar >= 0.5) {
-            stars.push(<FaStar key="half" style={{ color: 'yellow' }} />);
-            stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-          } else if (remainingStar > 0) {
-            stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-          }
-        }
-          return stars;
-        };
-      
-        return <div>{renderStars()}</div>;
-      }
 
       const handlePopup = () => {
         if(!auth.isAuthenticated){
@@ -98,8 +69,8 @@ function ProductItem({product}) {
       };
     useEffect(() => {
         if (auth.isAuthenticated) {
-            const following_apps = user.products.data.following_app.map((app)=>app.obj_id._id)
-            following_apps.forEach((appId) => {
+            const following_apps = user?.products?.data?.following_app?.map((app)=>app.obj_id._id)
+            following_apps?.forEach((appId) => {
                 if (appId === product._id) {
                   // console.log('following', appId);
                   setIsFollowing(true)
@@ -151,7 +122,7 @@ function ProductItem({product}) {
 
 <Link to={`/${product.slug}`} className='product-link'> {product.name}</Link>
                     <div className="stars">
-                        <StarRating />
+                        <StarRating rating={average}/>
                     </div>
                     <div className="ratings">
                         <p>{product.averageRating}<span>(149 Follows)</span></p>
@@ -168,7 +139,7 @@ function ProductItem({product}) {
             <div className='my-rating' onClick={handleRatingPopup}>
                 <p>My Rating </p>
             {
-                isFollowing ? <StarRatings average={average}/> : <StarRating/>
+                isFollowing ? <StarRating rating={average}/> : <StarRating/>
             }
             {/* <StarRating average={average}/> */}
             </div>

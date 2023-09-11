@@ -11,12 +11,6 @@ import Profile from "./pages/Profile";
 
 function App() {
   const [products, setProducts] = useState([])
-  // const [isAuthenticated, setIsAuthenticated]=useState(false)
-   
-//   const [credentials, setCredentials] = useState({
-//     email: '',
-//     password: '',
-// });
 
   useEffect(()=>{
     fetchData()
@@ -47,7 +41,6 @@ function App() {
     <Routes>
     <Route exact path="/" element={<Home products={products}/>} />
     <Route path="/category/:slug" element={<ProductList/>} />
-    {/* <Route path="/login" element={<Login/>} /> */}
     <Route path="/profile/:id" element={<PrivateRoute/>} >
     
     <Route path="/profile/:id" element={<Profile/>} />

@@ -14,7 +14,7 @@ function CommentPopup({ info }) {
   // console.log('currentComments',currentComments)
   const [comments, setComments] = useState(currentComments);
  
-  const authToken = localStorage.getItem("access_token");
+  const authToken = localStorage.getItem("access_token")
  
   const apiUrl = `https://appsalabackend-p20y.onrender.com/comment/${info.obj_id._id}`;
   const dispatch = useDispatch();

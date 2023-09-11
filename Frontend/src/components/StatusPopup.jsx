@@ -29,9 +29,9 @@ const handleDateChange = (date, dateString) => {
 
 const handleSubmit = async(e) => {
   e.preventDefault()
-  const applicationId = info.obj_id._id
+  const applicationID = info?.obj_id?._id ? info?.obj_id?._id : info?._id;
   const authToken = localStorage.getItem('access_token')
-  const api = `https://appsalabackend-p20y.onrender.com/updatePricingInfoInUserSchema/${applicationId}`
+  const api = `https://appsalabackend-p20y.onrender.com/updatePricingInfoInUserSchema/${applicationID}`
   const requestOptions = {
     method: 'PUT',
     headers: {
