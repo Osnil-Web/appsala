@@ -22,12 +22,8 @@ function ProfileProductsList({ userApps, id, savedApp }) {
   }, []); // Empty dependency array to run this effect only once
 
   if (userApps?.length === 0) {
-    return <h3>No items</h3>;
-  } else {
-    if (loading || showSpinner) {
-      // Show the spinner while loading or for the extra 2 seconds
-      return <Spinner />;
-    }
+    return <h3 style={{color:'#585858'}}>No items</h3>;
+  }
     return (
       <>
         {userApps?.map((info) => (
@@ -35,7 +31,7 @@ function ProfileProductsList({ userApps, id, savedApp }) {
         ))}
       </>
     );
-  }
+  
 }
 
 export default ProfileProductsList;

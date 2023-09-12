@@ -19,8 +19,11 @@ import CommentPopup from '../components/CommentPopup'
 import RatingPopup from '../components/RatingPopup'
 import ReactionComponent from '../components/ReactionComponent'
 import { selectUser } from '../Reducers/userReducer'
+import { useDispatch } from 'react-redux'
+import { fetchUser } from '../Reducers/userReducer'
 function Product() {
-    
+  const id = localStorage.getItem('userId')
+  const dispatch = useDispatch();
     const{ slug } = useParams()
     var input_string = slug
     var output_string = input_string.replace(/-/g, " ")
@@ -68,6 +71,10 @@ function Product() {
           setRatingPopupOpen(true)
       }
     }
+
+    useEffect(() => {
+      dispatch(fetchUser(id));
+    }, [dispatch,id]);
 
      useEffect(()=>{
       const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
@@ -171,7 +178,7 @@ function Product() {
           <img src={singleProduct[0]?.logo} alt=""/>
           <div>
           <h3>{singleProduct[0]?.name}</h3>
-          <StarRating rating={singleProduct[0]?.averageRating}/> 
+          <StarRating rating={singleProduct[0]?.averageRating} isDisabled ={true}/> 
            <p>749  Follows</p>
           </div>
           </div>
@@ -182,7 +189,7 @@ function Product() {
             <div className='my-rating'  onClick={handleRatingPopup}>
                 <p>My Rating </p>
                 {
-                isFollowing ? <StarRating rating={average}/> : <StarRating/>
+                isFollowing ? <StarRating rating={average}/> : <StarRating isDisabled ={true}/>
                 }
             </div>
    

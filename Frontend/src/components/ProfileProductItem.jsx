@@ -8,7 +8,9 @@ import RatingPopup from './RatingPopup'
 import StarRating from './StarRating'
 import StatusPopup from './StatusPopup'
 import CommentPopup from './CommentPopup'
-function ProfileProductItem({info, id, savedApp}) {
+import { useDispatch } from 'react-redux'
+import { fetchUser } from '../Reducers/userReducer'
+function ProfileProductItem({info,savedApp}) {
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('');
 const selector = (val)=>{
   if (val.startsWith('I am')){
@@ -29,8 +31,10 @@ if (info?.status){
   // setSelectedDropdownValue('option5')
   var selectedStatus = selector('No Status')
 }
-
+const dispatch = useDispatch();
+const id = localStorage.getItem('userId')
 useEffect(() => {
+  dispatch(fetchUser(id))
   if (info?.status) {
     setSelectedDropdownValue(selector(info.status));
   } else {
@@ -136,7 +140,6 @@ const handleDropdownChange = async(e) => {
   setSelectedDropdownValue(e.target.value);
   // var selectedValue = selector(e.target.value)
   
-  // console.log(selectedValue)
   if (e.target.value === 'option1'){
     var currentStatus = 'I am using it 👍'}
     if (e.target.value === 'option2'){
@@ -171,32 +174,6 @@ const handleDropdownChange = async(e) => {
   console.log('done calling')
 };
 
-// function StarRating({ average }) {
-//   const renderStars = () => {
-//     const stars = [];
-
-//     if(average === 0){
-//       for (let i = 0; i < 5; i++) {
-//         stars.push(<FaStar key="empty" style={{ color:"#D9D9D9" }} />);
-//       }
-//     }else{
-//     const fullStars = Math.floor(average);
-//     const remainingStar = average - fullStars;
-//     const remainingStarColor = " #D9D9D9";
-
-//     for (let i = 0; i < fullStars; i++) {
-//       stars.push(<FaStar key={`full_${i}`} style={{ color: '#F11A7B' }} />);
-//     }
-    
-//     if (remainingStar > 0) {
-//       stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-//     }
-//   }
-//     return stars;
-//   };
-
-//   return <div>{renderStars()}</div>;
-// }
 const handleCommentPopup = () => {
   setShowOverlay(true);
   setCommentsPopup(true)
