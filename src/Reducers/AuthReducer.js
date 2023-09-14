@@ -7,11 +7,11 @@ import { fetchUser } from './userReducer';
 //   return response.data;
 // });
 const initialState = {
-    user: null,
-    token: null,
-    loading: false,
-    error: null,
-    isAuthenticated: false,
+  user: localStorage.getItem('userId') || null,
+  token: localStorage.getItem('token') || null,
+  loading: false,
+  error: null,
+  isAuthenticated: Boolean(localStorage.getItem('token')),
   };
 const signupUrl = 'https://appsalabackend-p20y.onrender.com/signup'
 const apiUrl = 'https://appsalabackend-p20y.onrender.com/login'

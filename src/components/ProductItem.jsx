@@ -14,7 +14,6 @@ import CommentPopup from './CommentPopup'
 import RatingPopup from './RatingPopup'
 
 function ProductItem({product}) {
-  console.log(product)
     const [isDisabled, setIsDisabled] = useState(true)
     const [loginPopupOpen, setLoginPopupOpen] = useState(false);
     const [commentPopupOpen, setCommentPopupOpen] = useState(false);
@@ -29,8 +28,7 @@ function ProductItem({product}) {
     const [followingAppComments, setFollowingAppComments] = useState([])
     const [followingAppCommentList, setFollowingAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
-    
-    // console.log(followingAppComments)
+
     var shortDescription = product.shortDescription
     const words = shortDescription.split(/\s+/);
     // Get the first 20 words
@@ -42,10 +40,12 @@ function ProductItem({product}) {
             setShowOverlay(true)
             setLoginPopupOpen(true)
         }else{
+          if(isFollowing){
             setShowOverlay(true)
             setLoginPopupOpen(false)
             setCommentPopupOpen(true)
         }
+      }
       }
       const handleLoginPopup = () => {
         if(!auth.isAuthenticated){
@@ -58,10 +58,12 @@ function ProductItem({product}) {
             setShowOverlay(true)
             setLoginPopupOpen(true)
         }else{
+          if(isFollowing){
             setShowOverlay(true)
             setLoginPopupOpen(false)
             setCommentPopupOpen(false)
             setRatingPopupOpen(true)
+          }
         }
       }
       const handleOverlayDoubleClick = () => {
@@ -85,21 +87,32 @@ function ProductItem({product}) {
             }
       }, []);
 
+
+const average_calculator = (rating) =>  {
+  //var rating = followingAppRating
+  var ratingValues = Object.values(rating);
+  var totalValues = ratingValues.length;
+  var sum = ratingValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  var average = sum / totalValues;
+  return average
+}
       if(followingAppRating){
-        
-        var rating = followingAppRating
-        
-        var ratingValues = Object.values(rating);
-        var totalValues = ratingValues.length;
-        
-        var sum = ratingValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-        var average = sum / totalValues;
+        var average = average_calculator(followingAppRating)
         
       }else{
         var average = 0
       }
+      
+  var product_rating = product?.rating || 0
+  var product_average_rating  = average_calculator(product_rating)
+
   return (
     <>
+           {showOverlay && loginPopupOpen && (
+        <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
+          <LoginPopup/>
+        </div>
+  )}
     
    {showOverlay && commentPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
@@ -108,7 +121,7 @@ function ProductItem({product}) {
   )}
     {showOverlay && ratingPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <RatingPopup info={followingAppComments}/>
+          <RatingPopup info={followingAppComments} setRatingPopup={setRatingPopupOpen}/>
         </div>
   )}
      <div className="product-info">
@@ -122,7 +135,7 @@ function ProductItem({product}) {
 
 <Link to={`/${product.slug}`} className='product-link'> {product.name}</Link>
                     <div className="stars">
-                        <StarRating rating={average}/>
+                        <StarRating rating={product_average_rating} isDisabled ={true} />
                     </div>
                     <div className="ratings">
                         <p>{product.averageRating}<span>(149 Follows)</span></p>
@@ -139,13 +152,13 @@ function ProductItem({product}) {
             <div className='my-rating' onClick={handleRatingPopup}>
                 <p>My Rating </p>
             {
-                isFollowing ? <StarRating rating={average}/> : <StarRating/>
+                isFollowing ? <StarRating rating={average}/> : <StarRating isDisabled ={true} />
             }
             {/* <StarRating average={average}/> */}
             </div>
    
-        <div className='my-comments'>
-        <LiaCommentSolid onClick={handlePopup}/>
+        <div className='my-comments' onClick={handlePopup} style={{cursor: 'pointer'}}>
+        <LiaCommentSolid />
         {
             isFollowing ? 
             <p>comment <span style={{color: '#00A82D'}}>({followingAppCommentList.length})</span></p>
@@ -158,7 +171,7 @@ function ProductItem({product}) {
            
         </div>
        
-            <div className="product-bar" onClick={handlePopup}>
+            <div className="product-bar" onClick={handleLoginPopup}>
                 <p>
                     Do you wish to use {product.name}?
                 </p>

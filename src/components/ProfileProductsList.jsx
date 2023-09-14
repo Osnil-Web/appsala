@@ -14,7 +14,7 @@ function ProfileProductsList({ userApps, id, savedApp }) {
     // Use a setTimeout to hide the spinner after 2 seconds
     const timer = setTimeout(() => {
       setShowSpinner(false);
-    }, 3000); // 2000 milliseconds (2 seconds)
+    }, 2000); // 2000 milliseconds (2 seconds)
 
     return () => {
       clearTimeout(timer); // Clear the timer if the component unmounts

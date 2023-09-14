@@ -17,7 +17,7 @@ function Products({products}) {
         loading ? <Spinner/> :
         products ? (
           products.map((product)=>(
-                <ProductItem key={product.id} product = {product}/>
+                <ProductItem key={product._id} product = {product}/>
             ))
         ): <>
         <Spinner/> </>

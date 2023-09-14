@@ -12,6 +12,8 @@ import battery from '../assets/img/battery.png'
 import mask from '../assets/img/mask.png'
 import footerBanner from '../assets/img/footer-banner.png'
 import hands from '../assets/img/hands.png'
+import search from '../assets/img/search.svg'
+import app from '../assets/img/apps.png'
 import ProductCard from '../components/ProductCard'
 import { TiTick } from "react-icons/ti";
 import RegisterPopup from '../components/RegisterPopup'
@@ -43,11 +45,11 @@ const handleOverlayDoubleClick = () => {
   )}
      <header className="header">
         <div className="header-inner">
-
             <p className="large">Track all your Web Applications in one place.</p>
             <p className="header-para"> Compare, Rate and Review web applications. Keep track of Web Applications you use or planning to use.
                  Get alerts before your payment is processed. Save your time, money or both!</p>
-                      <button href="/" className="button-light">Start Building a Website</button>
+                <input type="text" placeholder='Enter Product Name or Product' className='header-search'/>
+                      {/* <button href="/" className="button-light">Start Building a Website</button> */}
             <p className="header-para" >A Random selection of Web Applications reviewed <span onClick={()=> handleRegisterPopup()}
             style={{cursor: 'pointer'}}
             >Join us.</span></p>
@@ -55,7 +57,10 @@ const handleOverlayDoubleClick = () => {
             </header>
            
             <div className="container latest-reviews">
-                <div className='product-images'><ProductCard products={products.data}/></div>
+                <div className='product-images'>
+                  <img src={app} alt="" />
+                  {/* <ProductCard products={products.data}/> */}
+                </div>
 
                 <h2 className="heading-h2">Appsala Reviews Over <span>1,000</span> Web Applications</h2>
                 <img src={performance} 

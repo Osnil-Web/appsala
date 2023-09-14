@@ -2,6 +2,7 @@ import Button from '../components/Button'
 import Products from '../components/Products'
 import { useState, useEffect } from "react"
 import { useParams } from 'react-router'
+import { Link } from 'react-router-dom'
 function ProductList() {
     const{ slug } = useParams()
     const [category, setCategory] = useState([])
@@ -10,14 +11,13 @@ function ProductList() {
     const handleClick = () => setPopulation(population+5)
     const product_list = category?.data?.slice(0,population)
 
-
     useEffect(() => {
+    
       const apiCategoryUrl = `https://appsalabackend-p20y.onrender.com/category/${slug}`
     const fetchCategory = async() =>{
       try{
         const response = await fetch(apiCategoryUrl)
         const data = await response.json()
-        console.log(data)
         setCategory(data)
       }
      catch (error) {
@@ -26,16 +26,21 @@ function ProductList() {
   }
       fetchCategory()
     }, [slug])
-
-    
+    function capitalizeWordsAfterSpace(inputString) {
+      return inputString
+        .toLowerCase() // Convert the entire string to lowercase to ensure consistent capitalization.
+        .replace(/(?:^|\s)\S/g, function (match) {
+          return match.toUpperCase();
+        });
+    }
 
  var input_string = slug
  var output_string = input_string.replace(/-/g, " ")
  var heading = input_string.replace(/-/g, " ")
-    // console.log(category.data)
+ var heading = capitalizeWordsAfterSpace(heading)
         return (
         <div>
-           <p className="page-path">Home / {output_string}</p>
+           <p className="page-path"><Link to={'/'} className='product-link' style={{color:'#101112'}}>Home </Link>/ {heading}</p>
             <header className="product-header">
             <div className="product-header-inner">
             <h1 className="product-heading">
@@ -45,7 +50,7 @@ function ProductList() {
         </header>
         <div className="product-section container">
             <div className="product-question">
-                <p className="question">What are Note & Writing Apps?</p>
+                <p className="question">What are {heading} Apps?</p>
                 <p>Note-writing apps are digital tools designed to help users capture, organize, and manage their notes efficiently. These apps have become increasingly popular due to their convenience and versatility in various aspects of life, 
             both personal and professional. Here's a brief overview of note-writing apps:</p>
             </div>  

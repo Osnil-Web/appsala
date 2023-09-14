@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons'
 import { useMemo, useState } from 'react';
-function StarRating({ average, color, rating, handleStarClick, aspect }) {
+function StarRating({ average, color, rating, handleStarClick, aspect, isDisabled }) {
   const [hover, setHover] = useState(null);
 
     const averageRating = Math.floor(average)
@@ -17,7 +17,7 @@ function StarRating({ average, color, rating, handleStarClick, aspect }) {
           icon={faStar} 
           key={idx} 
           onClick={() => handleStarClick(aspect,idx)} 
-          onMouseEnter={()=>setHover(idx)}
+          onMouseEnter={()=>setHover(isDisabled ? null : idx)}
           onMouseLeave={()=> setHover(null)}
           style={{color:getColor(idx)}}/>})
     }, [average, rating,hover])

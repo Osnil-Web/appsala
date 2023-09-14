@@ -3,7 +3,6 @@ import { updateUserData } from "../Reducers/userReducer";
 import { useDispatch,useSelector } from "react-redux";
 import StarRating from './StarRating';
 function RatingPopup({info,setRatingPopup}) {
-  
   const applicationId = info.obj_id._id
   const authToken = localStorage.getItem('access_token')
   console.log(info)
@@ -33,12 +32,12 @@ function RatingPopup({info,setRatingPopup}) {
     Support: userRatings.Support || 0, // Set a default value if Support rating is missing
   });
 
-
+  const userId = localStorage.getItem("userId");
 const dispatch = useDispatch();
   useEffect(() => { 
-    const userId = localStorage.getItem("userId");
+
     // dispatch(fetchUser(null));
-    dispatch(updateUserData(userId))   
+   
     setSelectedRatings(currentRatings)
     // console.log('calling fetch')
 
@@ -69,6 +68,7 @@ const dispatch = useDispatch();
       const data = await response.json();
       // setSelectedRatings(currentRatings)
       console.log('Response data:', data);
+       dispatch(updateUserData(userId))   
       // Handle the response data here
     } catch (error) {
       console.error('Error:', error);
