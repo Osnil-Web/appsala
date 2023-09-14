@@ -34,7 +34,7 @@ if (info?.status){
 const dispatch = useDispatch();
 const id = localStorage.getItem('userId')
 useEffect(() => {
-  dispatch(fetchUser(id))
+  // dispatch(fetchUser(id))
   if (info?.status) {
     setSelectedDropdownValue(selector(info.status));
   } else {

@@ -8,14 +8,18 @@ import { BrowserRouter as Router, Route,Routes } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import PrivateRoute from "./pages/PrivateRoute";
 import Profile from "./pages/Profile";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser } from './Reducers/userReducer'
 
 function App() {
   const [products, setProducts] = useState([])
 
+  const id = localStorage.getItem('userId')
+  const dispatch = useDispatch();
   useEffect(()=>{
     fetchData()
-  
-  },[])
+    dispatch(fetchUser(id));
+  }, [dispatch,id]);
 
   const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
   
@@ -27,11 +31,10 @@ function App() {
    
   }
 
- 
 
-
-
-
+  //  useEffect(() => {
+  //   dispatch(fetchUser(id));
+  // }, [dispatch,id]);
 
   return (
   <>

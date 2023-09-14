@@ -21,13 +21,13 @@ import ReactionComponent from '../components/ReactionComponent'
 import { selectUser } from '../Reducers/userReducer'
 import { useDispatch } from 'react-redux'
 import { fetchUser } from '../Reducers/userReducer'
+import { Link } from 'react-router-dom'
 function Product() {
-  const id = localStorage.getItem('userId')
-  const dispatch = useDispatch();
     const{ slug } = useParams()
+    const user = useSelector(selectUser)
+    const [singleProduct, setSingleProduct] = useState([])
     var input_string = slug
     var output_string = input_string.replace(/-/g, " ")
-    const [singleProduct, setSingleProduct] = useState([])
     const [loading, setLoading] = useState(true);
     const [showOverlay, setShowOverlay] = useState(false);
     const auth = useSelector((state) => state.auth)
@@ -36,22 +36,45 @@ function Product() {
     const [loginPopupOpen, setLoginPopupOpen] = useState(false);
     const [commentPopupOpen, setCommentPopupOpen] = useState(false);
     const [ratingPopupOpen, setRatingPopupOpen] = useState(false);
-    const user = useSelector(selectUser)
     const [followingAppRating, setFollowingAppRating] = useState([])
     const [isFollowing, setIsFollowing] = useState(false)
     const [followingAppComments, setFollowingAppComments] = useState([])
     const [followingAppCommentList, setFollowingAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
-   
+    useEffect(()=>{
+      const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
+      const fetchData = async() =>{
+        const response = await fetch(apiUrl)
+        const data = await response.json()
+        const foundProducts = data.data.filter((product) => product.slug === slug);
+        setSingleProduct(foundProducts)
+        setSimilar(data.data.filter((product) => product?.Category === singleProduct[0]?.Category))
+        setLoading(false)
+      }
+      if (auth.isAuthenticated) {
+        var app = user?.products?.data?.following_app 
+        var following_app = app?.find((app)=> app?.obj_id?._id === singleProduct[0]?._id)
+        if(following_app){
+            setIsFollowing(true)
+            setFollowingAppRating(following_app?.subscription?.user_ratings[0]?.rating)
+            setFollowingAppCommentList(following_app?.subscription?.comment)
+            setFollowingAppComments(following_app)
+            setCurrentStatus(following_app?.status)
+        }
+      }
+        fetchData()
+      },[setIsFollowing , auth.isAuthenticated, user?.products?.data?.following_app, singleProduct[0]?._id, followingAppRating, followingAppCommentList, followingAppComments, currentStatus, slug]);
+
     const handlePopup = () => {
       if(!auth.isAuthenticated){
           setShowOverlay(true)
           setLoginPopupOpen(true)
-      }else{
-        setRatingPopupOpen(false)
+      }else if(isFollowing){
           setShowOverlay(true)
           setLoginPopupOpen(false)
           setCommentPopupOpen(true)
+      }else{
+        alert('Please follow the app first')
       }
     }
     const handleLoginPopup = () => {
@@ -64,48 +87,16 @@ function Product() {
       if(!auth.isAuthenticated){
           setShowOverlay(true)
           setLoginPopupOpen(true)
-      }else{
+      }else if(isFollowing){
           setShowOverlay(true)
           setLoginPopupOpen(false)
           setCommentPopupOpen(false)
           setRatingPopupOpen(true)
+      }else{
+        alert('Please follow the app first')
       }
     }
-
-    useEffect(() => {
-      dispatch(fetchUser(id));
-    }, [dispatch,id]);
-
-     useEffect(()=>{
-      const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
-      const fetchData = async() =>{
-        const response = await fetch(apiUrl)
-        const data = await response.json()
-        const foundProducts = data.data.filter((product) => product.slug === slug);
-        setSingleProduct(foundProducts)
-        console.log(foundProducts)
-        if (auth.isAuthenticated) {
-          const app = user.products.data.following_app
-          const following_apps = app.map((app)=>app.obj_id._id)
-          following_apps.forEach((appId) => {
-              if (appId === singleProduct[0]?._id) {
-              setIsFollowing(true)
-              setFollowingAppRating(app.find((app)=> app.obj_id._id === singleProduct[0]?._id).subscription?.user_ratings[0]?.rating)
-              setFollowingAppCommentList(app.find((app)=> app.obj_id._id === singleProduct[0]?._id).subscription.comment)
-              setFollowingAppComments(app.find((app)=> app.obj_id._id === singleProduct[0]?._id))
-              setCurrentStatus(app.find((app)=> app?.obj_id?._id === singleProduct[0]?._id)?.status)
-              } else {
-                console.log('not following');
-              }
-            });
-          }
-        setSimilar(data.data.filter((product) => product?.Category === singleProduct[0]?.Category))
-        setLoading(false)
-      }
-      console.log(singleProduct[0]?._id)
- 
-        fetchData()
-      },[slug])
+   
 
       const handleOverlayDoubleClick = () => {
         setShowOverlay(false);
@@ -152,6 +143,11 @@ function Product() {
     }else{
       var average = 0
     }
+
+    const website = `http://${singleProduct[0]?.sellerDetails?.companyWebsite}`
+    if (loading) {
+      return <Spinner />;
+    }
   return (
     <>
        {showOverlay && loginPopupOpen && (
@@ -161,12 +157,18 @@ function Product() {
   )}
    {showOverlay && commentPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <CommentPopup info={followingAppComments}/>
+          {
+          followingAppComments ? <CommentPopup info={followingAppComments} /> : <></>
+          }
         </div>
   )}
-    {showOverlay && ratingPopupOpen && (
+    {showOverlay && ratingPopupOpen &&  (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <RatingPopup info={followingAppComments}/>
+          {
+          followingAppComments ?
+          <RatingPopup info={followingAppComments} setRatingPopup={setRatingPopupOpen} /> : <></>
+        }
+         
         </div>
   )}
 
@@ -187,7 +189,7 @@ function Product() {
     <p className='review'>{singleProduct[0]?.review}</p>
     <div className='comment-rating'>
             <div className='my-rating'  onClick={handleRatingPopup}>
-                <p>My Rating </p>
+                <p>My Rating </p> 
                 {
                 isFollowing ? <StarRating rating={average}/> : <StarRating isDisabled ={true}/>
                 }
@@ -197,14 +199,18 @@ function Product() {
         <LiaCommentSolid/>
         {
             isFollowing ? 
-            <p>comment <span style={{color: '#00A82D'}}>({followingAppCommentList.length})</span></p>
+            <p>comment <span style={{color: '#00A82D'}}>({followingAppCommentList?.length})</span></p>
              : <p className='no-comment' onClick={handlePopup}>Comment</p>
         }
         </div>
         </div>
     <div>
-                <button type= "btn-light" className='button' onClick={handleSave}> <FaBookmark className='icon'/> Save</button>
-                <button type= "btn-dark" className='button'> <FaGlobe className='icon'/> Visit Web</button>
+                <button type= "btn-light" className='button' onClick={handleSave} disabled={isFollowing} > <FaBookmark className='icon'/>
+                {
+                  isFollowing ? <span>Saved</span> : <span>Save</span>
+                }
+                 </button>
+                <button type= "btn-dark" className='button'> <Link to={website} className='button-link' target="_blank"> <FaGlobe className='icon'/> Visit Web </Link></button>
              </div>
     </div>
              
@@ -240,17 +246,12 @@ function Product() {
     <div className="container" style={{width:"60%"}}>
     <h1 className="heading">Similar Products / Alternatives</h1>
     </div>
-        {/* { similar ? (
-  <SimilarList similar={similar}/> 
-        ) :
-        <Spinner/>
-          } */}
-
+        
 {
 
 loading ? <Spinner/> :
 similar ? (
-  <SimilarList similar={similar}/> 
+  <SimilarList similar={similar} key={similar._id}/> 
 ):  
 <Spinner/> 
    

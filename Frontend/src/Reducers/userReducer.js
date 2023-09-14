@@ -65,7 +65,7 @@ const userSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(updateUserData.pending, state => {
-        state.loading = true;
+        state.loading = false;
         state.products = null;
       })
       .addCase(updateUserData.fulfilled, (state, action) => {

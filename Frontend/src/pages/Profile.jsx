@@ -27,9 +27,11 @@ function Profile() {
   const id = localStorage.getItem('userId')
   const dispatch = useDispatch();
   const navigate = useNavigate()
-    useEffect(() => {
-    dispatch(fetchUser(id));
-  }, [dispatch,id]);
+  
+  //   useEffect(() => {
+  //   dispatch(fetchUser(id));
+  // }, [dispatch,id]);
+  
   useEffect(() => {
     if (currentUser?.products?.data?.following_app) {
       // If currentUser has data, set userApps and stop loading
@@ -122,6 +124,7 @@ const AllUsers = () =>{
   setUserApps(currentUser.products?.data?.following_app)
   setUser(currentUser.products?.data)
   setSelectedFilter('All')
+  setSortText('Sort by')
 }
 
 const handleFilterClick = (filter) => {
@@ -143,6 +146,7 @@ const handleFilterClick = (filter) => {
   else {
     setSelectedFilter(filter); 
   }
+  setSortText('Sort by')
 };
 
 const filterComments = () =>{

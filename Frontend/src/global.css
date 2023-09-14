@@ -135,9 +135,9 @@ input[type="text"] {
     text-align: center;
     opacity: 50%;
     width: 300px;
-    padding: 6px 50px;
+    padding: 15px 50px;
     border: 1px solid #D3D3D3 ;
-    border-radius: 5px;
+    border-radius: 50px;
   }
 
 .header-btn{
@@ -1344,3 +1344,25 @@ input[type='checkbox']:checked {
     text-decoration: none;
     cursor: pointer;
 }
+.button-link{
+    text-decoration: none;
+    color: #F11A7B
+}
+.button-link:hover{
+    color: white;
+}
+
+.header-search{
+    border-radius: 50px;
+}
+
+.header-search::placeholder {
+    /* Style the placeholder text */
+    font-size: 16px; /* Adjust the size as needed */
+    color: #555;    /* Adjust the color as needed */
+    padding-left: 24px; /* Adjust the padding to create space for the icon */
+    background-image: url('./assets/img/search.svg'); /* URL to your search icon image */
+    background-size: 16px 16px; /* Adjust the size of the icon */
+    background-position: 5px center; /* Adjust the position of the icon */
+    background-repeat: no-repeat;
+  }

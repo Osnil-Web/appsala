@@ -2,6 +2,7 @@ import { FaUser } from "react-icons/fa";
 import { ImBin2 } from "react-icons/im";
 
 function CommentList({comment, setComments, comments}) {
+
 // Convert the timestamp to a Date object
 const date = new Date(comment?.createdAt);
 
@@ -35,6 +36,7 @@ const DeleteComment = (id) => {
     .then(data => {
       console.log('Comment deleted successfully:', data);
       // You can update your state or perform other actions after deleting the comment
+      
       const updatedComments = comments.filter(comment => comment._id !== commentIdToDelete);
       setComments(updatedComments);
     })

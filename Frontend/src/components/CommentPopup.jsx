@@ -18,10 +18,11 @@ function CommentPopup({ info }) {
  
   const apiUrl = `https://appsalabackend-p20y.onrender.com/comment/${info.obj_id._id}`;
   const dispatch = useDispatch();
+  const userId = localStorage.getItem("userId");
   useEffect(() => { 
-    const userId = localStorage.getItem("userId");
+  
     // dispatch(fetchUser(null));
-    dispatch(updateUserData(userId))   
+    
     setComments(currentComments);
     // console.log('calling fetch')
 
@@ -51,6 +52,7 @@ function CommentPopup({ info }) {
       // Add the new comment to the top of the comments list with the current date
       const newComment = {comment, createdAt: new Date().toISOString() };
       setComments((prevComments) => [ ...prevComments,newComment]);
+      dispatch(updateUserData(userId))   
       // localStorage.setItem({
       //   comments: JSON.stringify(sortCommentsByDate(comments)),
       // })
@@ -83,7 +85,7 @@ function CommentPopup({ info }) {
           <CommentList key={comment._id} comment={comment} setComments={setComments} comments={comments} />
         ))} */}
  {comments.slice().reverse().map((comment, index) => (
-          <CommentList key={comment._id} comment={comment} setComments={setComments}  />
+          <CommentList key={comment._id} comment={comment} setComments={setComments} comments={comments}  />
         ))}
 
       </div>

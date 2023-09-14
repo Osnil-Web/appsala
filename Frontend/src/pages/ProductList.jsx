@@ -2,12 +2,8 @@ import Button from '../components/Button'
 import Products from '../components/Products'
 import { useState, useEffect } from "react"
 import { useParams } from 'react-router'
-import { useDispatch } from 'react-redux'
-import { fetchUser } from '../Reducers/userReducer'
 import { Link } from 'react-router-dom'
 function ProductList() {
-  const id = localStorage.getItem('userId')
-  const dispatch = useDispatch();
     const{ slug } = useParams()
     const [category, setCategory] = useState([])
 
@@ -16,17 +12,12 @@ function ProductList() {
     const product_list = category?.data?.slice(0,population)
 
     useEffect(() => {
-      dispatch(fetchUser(id));
-    }, [dispatch,id]);
-
-    useEffect(() => {
     
       const apiCategoryUrl = `https://appsalabackend-p20y.onrender.com/category/${slug}`
     const fetchCategory = async() =>{
       try{
         const response = await fetch(apiCategoryUrl)
         const data = await response.json()
-        console.log(data)
         setCategory(data)
       }
      catch (error) {
@@ -47,7 +38,6 @@ function ProductList() {
  var output_string = input_string.replace(/-/g, " ")
  var heading = input_string.replace(/-/g, " ")
  var heading = capitalizeWordsAfterSpace(heading)
-    // console.log(category.data)
         return (
         <div>
            <p className="page-path"><Link to={'/'} className='product-link' style={{color:'#101112'}}>Home </Link>/ {heading}</p>

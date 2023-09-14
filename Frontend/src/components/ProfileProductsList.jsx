@@ -14,7 +14,7 @@ function ProfileProductsList({ userApps, id, savedApp }) {
     // Use a setTimeout to hide the spinner after 2 seconds
     const timer = setTimeout(() => {
       setShowSpinner(false);
-    }, 3000); // 2000 milliseconds (2 seconds)
+    }, 2000); // 2000 milliseconds (2 seconds)
 
     return () => {
       clearTimeout(timer); // Clear the timer if the component unmounts
@@ -22,8 +22,12 @@ function ProfileProductsList({ userApps, id, savedApp }) {
   }, []); // Empty dependency array to run this effect only once
 
   if (userApps?.length === 0) {
-    return <h3 style={{color:'#585858'}}>No items</h3>;
-  }
+    return <h3>No items</h3>;
+  } else {
+    if (loading || showSpinner) {
+      // Show the spinner while loading or for the extra 2 seconds
+      return <Spinner />;
+    }
     return (
       <>
         {userApps?.map((info) => (
@@ -31,7 +35,7 @@ function ProfileProductsList({ userApps, id, savedApp }) {
         ))}
       </>
     );
-  
+  }
 }
 
 export default ProfileProductsList;

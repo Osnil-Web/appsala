@@ -14,7 +14,6 @@ import CommentPopup from './CommentPopup'
 import RatingPopup from './RatingPopup'
 
 function ProductItem({product}) {
-
     const [isDisabled, setIsDisabled] = useState(true)
     const [loginPopupOpen, setLoginPopupOpen] = useState(false);
     const [commentPopupOpen, setCommentPopupOpen] = useState(false);
@@ -29,10 +28,7 @@ function ProductItem({product}) {
     const [followingAppComments, setFollowingAppComments] = useState([])
     const [followingAppCommentList, setFollowingAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
-console.log(product.rating)
 
-   
-    // console.log(followingAppComments)
     var shortDescription = product.shortDescription
     const words = shortDescription.split(/\s+/);
     // Get the first 20 words
@@ -107,8 +103,8 @@ const average_calculator = (rating) =>  {
         var average = 0
       }
       
-  var product_rating = product.rating
-  var product_average_rating  = average_calculator(product_rating )
+  var product_rating = product?.rating || 0
+  var product_average_rating  = average_calculator(product_rating)
 
   return (
     <>
